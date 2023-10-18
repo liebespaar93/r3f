@@ -1,44 +1,55 @@
-import React, { useRef } from 'react'
-import { OrbitControls } from '@react-three/drei'
+import { useEffect, useRef } from 'react';
+import { Box, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
-import { useFrame } from '@react-three/fiber';
+import { useControls } from 'leva'
+function MyBox(prop) {
+	const geom = new THREE.BoxGeometry();
+	return (
+		<mesh {...prop} geometry={geom}>
+		</mesh>)
+}
 
 function MyElement3D() {
-	const refMesh = useRef();
-	useFrame((state, delta ) => {
-		refMesh.current.rotation.z += delta;
+	const refMash = useRef();
+	const refWireMash = useRef();
+
+	const { xSize, ySize, zSize, xSegements, ySegements, zSegements, xRotation, yRotation, zRotation } = useControls({
+		xSize: { value: 1, min: 0.1, max: 10, step: 0.1 },
+		ySize: { value: 1, min: 0.1, max: 10, step: 0.1 },
+		zSize: { value: 1, min: 0.1, max: 10, step: 0.1 },
+		xSegements: { value: 1, min: 1, max: 10, step: 1 },
+		ySegements: { value: 1, min: 1, max: 10, step: 1 },
+		zSegements: { value: 1, min: 1, max: 10, step: 1 },
+		xRotation: { value: 0, min: 0, max: Math.PI * 2, step: 0.001 },
+		yRotation: { value: 0, min: 0, max: Math.PI * 2, step: 0.001 },
+		zRotation: { value: 0, min: 0, max: Math.PI * 2, step: 0.001 }
 	});
-	
+	useEffect(() => {
+		refWireMash.current.geometry = refMash.current.geometry;
+	}, [xSize, ySize, zSize, xSegements, ySegements, zSegements, xRotation, yRotation, zRotation])
 	return (
 		<>
-			<directionalLight position={[1, 1, 1]} />
-
-			<axesHelper scale={10} />
-
 			<OrbitControls />
 
-			<mesh ref={refMesh}
-				position={[0, 1, 1]}
-				rotation={[0, 30 * Math.PI / 180, THREE.MathUtils.degToRad(10)]}
-				scale={[2, 1, 1]}
-			>
-				<boxGeometry />
-				<meshStandardMaterial
-					color="#e67e22"
-					transparent={true}
-					opacity={0.5}
-				/>
+			<ambientLight intensity={0.5} />
+			<directionalLight position={[2, 2, 3]} intensity={0.9} />
 
-				<axesHelper scale={2} />
-				<mesh
-					position={[0.25, 0, 0]}
-					scale={[0.25, 0.25, 0.25]}
-				>
-					<sphereGeometry />
-					<meshStandardMaterial color="red" />
-				<axesHelper scale={3} />
-				</mesh>
+			<mesh ref={refMash} rotation={[xRotation, yRotation, zRotation]}>
+				<boxGeometry args={[xSize, ySize, zSize, xSegements, ySegements, zSegements]} />
+				<meshStandardMaterial color="#1abc9c" />	
 			</mesh>
+
+			<mesh ref={refWireMash} rotation={[xRotation, yRotation, zRotation]}>
+				<meshStandardMaterial emissive="#ffbe0b" wireframe={true} />
+			</mesh>
+			
+			<Box position={[2, 0, 0]}>
+				<meshStandardMaterial color="#a9613a" />
+			</Box>
+
+			<MyBox position={[-2, 0, 0]}>
+				<meshStandardMaterial color="#79393a" />
+			</MyBox>
 		</>
 	)
 }
