@@ -36,23 +36,47 @@ categories:
 
 ## 🚀 Three js
 
-### 🔗 링크 <https://threejs.org/>
-
 > 다양한 three js 로 만든 프로젝트를 볼 수 있다
+
+### 🔗 링크 <https://threejs.org/>
 
 [![image](https://threejs.org/files/share.png)](https://threejs.org/)
 
 🔗 깃허브 링크 : <https://github.com/mrdoob/three.js>
 
-## R3F
-
-### 🔗 링크 <https://pmnd.rs/>
+## 🚀 R3F
 
 > R3F 관한 Doc이나 프로젝트를 따라하며 배울 수 있다
+
+### 🔗 링크 <https://pmnd.rs/>
 
 [![image](./README/assets/pmnd24f_04.gif "R3F")](https://pmnd.rs/)
 
 🔗 깃허브 링크 : <https://github.com/pmndrs>
+
+## 🚀 drei
+
+> R3F 사용에 편리성을 추가하는 페키지
+
+### 🔗 링크 <https://github.com/pmndrs/drei>
+
+[![image](https://opengraph.githubassets.com/be8a017021fff881924b53a145f9a76365ebc71c9f654259173552166cfd99be/pmndrs/drei)](https://github.com/pmndrs/drei)
+
+## 🚀 leva
+
+> R3F의 값 변경 컨트롤러 페키지
+
+### 🔗 링크 <https://github.com/pmndrs/leva>
+
+[![image](https://repository-images.githubusercontent.com/310912783/c1626180-6f02-11eb-8362-fdbe4e10ef8f)](https://github.com/pmndrs/leva)
+
+## 🚀 GLSL / Shader
+
+> Shader에 관한 강의 입니다 `the book of shaders` 를 기반으로 학습을 합니다
+
+### 🔗 링크 <https://www.opentutorials.org/module/3659/21954>
+
+[![image](./README/assets/GLSL_Shader.gif "R3F")](https://www.opentutorials.org/module/3659/21954)
 
 ## 🏛️ 규칙
 
