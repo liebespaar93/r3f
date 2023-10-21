@@ -70,6 +70,9 @@ categories:
 
 [![image](https://repository-images.githubusercontent.com/310912783/c1626180-6f02-11eb-8362-fdbe4e10ef8f)](https://github.com/pmndrs/leva)
 
+> [!NOTE]  
+> code view <https://leva.pmnd.rs/?path=/story/inputs-string--simple>
+
 ## 🚀 GLSL / Shader
 
 > Shader에 관한 강의 입니다 `the book of shaders` 를 기반으로 학습을 합니다
@@ -77,6 +80,14 @@ categories:
 ### 🔗 링크 <https://www.opentutorials.org/module/3659/21954>
 
 [![image](./README/assets/GLSL_Shader.gif "R3F")](https://www.opentutorials.org/module/3659/21954)
+
+## 🚀 polyhaven
+
+> 배경 화면의 context을 제공 해준다
+
+### 🔗 링크 <https://polyhaven.com/>
+
+[![image](https://cdn.polyhaven.com/site_images/home/window_rend.jpg?width=630)](https://polyhaven.com)
 
 ## 🏛️ 규칙
 
