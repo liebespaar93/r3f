@@ -4,6 +4,7 @@ import { useLoader } from "@react-three/fiber"
 import { RGBELoader } from "three-stdlib"
 import { folder, useControls } from 'leva'
 import { useEffect, useRef } from 'react'
+import { DEG2RAD } from 'three/src/math/MathUtils'
 
 function MyRoom({ children }) {
 	return (
@@ -86,139 +87,78 @@ function MyLightControls() {
 
 function MyObject({ ...props }) {
 	const raidus = 3;
-	const matcap = useTexture("./images/matcap/matcap.jpg");
+	const textures = useTexture({
+		basecolor: "./images/glass_window/basecolor.jpg",
+		roughness: "./images/glass_window/roughness.jpg",
+		metallic: "./images/glass_window/metallic.jpg",
+		normal: "./images/glass_window/normal.jpg",
+		height: "./images/glass_window/height.png",
+		ao: "./images/glass_window/ambientOcclusion.jpg",
+		opacity: "./images/glass_window/opacity.jpg",
+	});
+
+	const glass_window = useRef()
+
+	useEffect(() => {
+		textures.basecolor.repeat.x = textures.height.repeat.x = 
+		textures.ao.repeat.x = textures.roughness.repeat.x =
+		textures.metallic.repeat.x = textures.normal.repeat.x = 
+		textures.opacity.repeat.x = 4
+
+		textures.basecolor.wrapS = textures.height.wrapS = 
+		textures.ao.wrapS = textures.roughness.wrapS =
+		textures.metallic.wrapS = textures.normal.wrapS = 
+		textures.opacity.wrapS = THREE.MirroredRepeatWrapping
+		
+		textures.basecolor.needsUpdate = textures.height.needsUpdate = 
+		textures.ao.needsUpdate = textures.roughness.needsUpdate =
+		textures.metallic.needsUpdate = textures.normal.needsUpdate = 
+		textures.opacity.needsUpdate = true
+
+		glass_window.current.geometry.setAttribute("uv2", 
+			new THREE.BufferAttribute(glass_window.current.geometry.attributes.uv.array, 2)
+		)
+
+	}, [])
 	return (
 		<>
-			<mesh position={[0, 0, 0]} rotation={[0, 0, THREE.MathUtils.degToRad(-90)]}>
-				<sphereGeometry
-					args={[raidus]}
+			<mesh ref={glass_window} rotation={[0,DEG2RAD * -90, 0]}>
+				<cylinderGeometry args={[2, 2, 3, 256, 256, true]} />
+				<meshStandardMaterial
+					side={THREE.DoubleSide}
+
+					map={textures.basecolor}
+
+					roughnessMap={textures.roughness}
+					roughnessMap-colorSpace={THREE.NoColorSpace}
+					metalnessMap={textures.metallic}
+
+					metalness={0.5}
+					metalnessMap-colorSpace={THREE.NoColorSpace}
+		
+					normalMap={textures.normal}
+					normalMap-colorSpace={THREE.NoColorSpace}
+					normalScale={5}
+
+					displacementMap={textures.height}
+					displacementMap-colorSpace={THREE.NoColorSpace}
+					displacementScale={0.2}
+					displacementBias={-0.2}
+
+					aoMap={textures.ao}
+
+					alphaMap={textures.opacity}
+					
+					transparent
 				/>
-				<meshPhysicalMaterial
-					side={THREE.FrontSide}
-					color="#FFFFFF"
 
-					emissive={0x000000}
-					roughness={1.0}
-					metalness={0.0}
-					clearcoat={1.0}
-					clearcoatRoughness={0.1}
-				/>
-			</mesh>
-			<mesh position={[0, 4, 0]}>
-				<sphereGeometry />
-				<meshMatcapMaterial matcap={matcap}
-					flatShading={true} />
-			</mesh>
-		</>
-	)
-}
-function MyCubeCamera() {
-	const texture = useLoader(RGBELoader, './images/hdr/cayley_interior_4k.hdr')
-	// const texture = useLoader(RGBELoader, './images/hdr/studio_small_09_4k.hdr')
-
-	const config = useControls({
-		CubeCamera: folder({
-			visible: false,
-			transparent: true,
-			roughness: { value: 0.0, min: 0, max: 1, step: 0.01 },
-			metalness: { value: 1.0, min: 0, max: 1, step: 0.01 },
-			opacity: { value: 0.8, min: 0, max: 1, step: 0.01 },
-			toneMapped: true
-		})
-	})
-	return (
-		<>
-			<directionalLight position={[0, 1, 0]} />
-			<CubeCamera resolution={1024} frames={1} envMap={texture}>
-				{(texture) => (
-					<mesh>
-						<dodecahedronGeometry />
-						<MeshReflectorMaterial {...config}
-							envMap={texture}
-						/>
-					</mesh>
-				)}
-			</CubeCamera>
-		</>
-	)
-}
-
-function MyGlass() {
-	const config = useControls({
-		Glass: folder({
-			visible: false,
-			transmissionSampler: false,
-			backside: false,
-			resolution: { value: 2048, min: 256, max: 2048, step: 256 },
-			transmission: { value: 1, min: 0, max: 1 },
-			roughness: { value: 0.0, min: 0, max: 1, step: 0.01 },
-			thickness: { value: 3.5, min: 0, max: 10, step: 0.01 },
-			ior: { value: 1.5, min: 1, max: 5, step: 0.01 },
-			chromaticAberration: { value: 0.06, min: 0, max: 1 },
-			anisotropy: { value: 0.1, min: 0, max: 1, step: 0.01 },
-			distortion: { value: 0.0, min: 0, max: 1, step: 0.01 },
-			distortionScale: { value: 0.3, min: 0.01, max: 1, step: 0.01 },
-			temporalDistortion: { value: 0.5, min: 0, max: 1, step: 0.01 },
-			clearcoat: { value: 1, min: 0, max: 1 },
-			attenuationDistance: { value: 0.5, min: 0, max: 10, step: 0.01 },
-			attenuationcolor: '#ffffff',
-			bg: '#839681'
-		})
-	})
-	return (
-		<>
-			<mesh>
-				<sphereGeometry />
-				<MeshTransmissionMaterial {...config} background={new THREE.Color(config.bg)} />
-			</mesh>
-
-		</>
-	)
-}
-
-function MyWobble() {
-	const config = useControls({
-		Wobble: folder({
-			visible: true,
-			factor: { value: 1, min: 0, max: 10, step: 1 },
-			speed: { value: 1, min: 0, max: 100, step: 1 },
-			color: "#F8D628",
-			foo: { options: { none: '', notting: '', test: '' } }
-		})
-	})
-	return (
-		<>
-			<mesh scale={0.3}>
-				<torusGeometry args={[0.5, 0.2, 32]} />
-				<MeshWobbleMaterial
-					{...config}
-				/>
 			</mesh>
 		</>
 	)
 }
 
-function MyDistort() {
 
-	const config = useControls({
-		Distort: folder({
-			visible: true,
-			distort: { value: 1, min: 0, max: 10, step: 1 },
-			speed: { value: 1, min: 0, max: 100, step: 1 },
-			color: "#F8D628"
-		})
-	})
-	return (
-		<>
-			<mesh scale={0.7}>
-				<torusGeometry args={[0.5, 0.2, 32]} />
-				<MeshDistortMaterial
-					{...config}
-				/>
-			</mesh>
-		</>
-	)
-}
+
 function MyElement3D() {
 	useEffect(() => {
 
@@ -230,13 +170,8 @@ function MyElement3D() {
 
 			<ambientLight intensity={0.2} />
 			<MyLightControls />
-
 			<MyRoom>
-				<MyCubeCamera />
-				<MyGlass />
-				<MyWobble />
-				<MyDistort />
-				{/* <MyObject /> */}
+				<MyObject />
 			</MyRoom>
 		</>
 	)
