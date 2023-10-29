@@ -1,10 +1,9 @@
 import * as THREE from 'three'
-import { CubeCamera, MeshDistortMaterial, MeshReflectorMaterial, MeshTransmissionMaterial, MeshWobbleMaterial, OrbitControls, useGLTF, useTexture } from '@react-three/drei'
-import { useLoader } from "@react-three/fiber"
-import { RGBELoader } from "three-stdlib"
+import { MeshReflectorMaterial, OrbitControls, useHelper } from '@react-three/drei'
+import { useFrame } from "@react-three/fiber"
+import { } from "@react-three/drei"
 import { folder, useControls } from 'leva'
-import { useEffect, useRef } from 'react'
-import { DEG2RAD } from 'three/src/math/MathUtils'
+import { useRef } from 'react'
 
 function MyRoom({ children }) {
 	return (
@@ -51,124 +50,332 @@ function MyRoom({ children }) {
 	)
 }
 
-function MyLightControls() {
-	const { L_x, L_y, L_z, LR_x, LR_y, LR_z, LB_x, LB_y, LB_z, LG_x, LG_y, LG_z } = useControls({
-		lightCntr: folder({
-			lightTotal: folder({
-				L_x: { value: 0, min: -10, max: 10, step: 0.001 },
-				L_y: { value: 0, min: -10, max: 10, step: 0.001 },
-				L_z: { value: 0, min: -10, max: 10, step: 0.001 },
-			}),
-			lightRed: folder({
-				LR_x: { value: 1, min: -10, max: 10, step: 0.001 },
-				LR_y: { value: 0, min: -10, max: 10, step: 0.001 },
-				LR_z: { value: 0, min: -10, max: 10, step: 0.001 },
-			}),
-			lightGreen: folder({
-				LG_x: { value: 0, min: -10, max: 10, step: 0.001 },
-				LG_y: { value: 1, min: -10, max: 10, step: 0.001 },
-				LG_z: { value: 0, min: -10, max: 10, step: 0.001 }
-			}),
-			lightBlue: folder({
-				LB_x: { value: -1, min: -10, max: 10, step: 0.001 },
-				LB_y: { value: 0, min: -10, max: 10, step: 0.001 },
-				LB_z: { value: 0, min: -10, max: 10, step: 0.001 },
-			})
+function MyAmbientLight() {
+	const { visible, color, intensity } = useControls({
+		AmbientLight: folder({
+			visible: false,
+			color: "#FFFFFF",
+			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
 		})
 	})
 	return (
 		<>
-			<directionalLight color="red" position={[L_x + LR_x, L_y + LR_y, L_z + LR_z]} intensity={1.0} />
-			<directionalLight color="green" position={[L_x + LG_x, L_y + LG_y, L_z + LG_z]} intensity={1.0} />
-			<directionalLight color="blue" position={[L_x + LB_x, L_y + LB_y, L_z + LB_z]} intensity={1.0} />
+			<ambientLight
+				visible={visible}
+				color={color}
+				intensity={intensity} />
 		</>
 	)
 }
 
-function MyObject({ ...props }) {
-	const raidus = 3;
-	const textures = useTexture({
-		basecolor: "./images/glass_window/basecolor.jpg",
-		roughness: "./images/glass_window/roughness.jpg",
-		metallic: "./images/glass_window/metallic.jpg",
-		normal: "./images/glass_window/normal.jpg",
-		height: "./images/glass_window/height.png",
-		ao: "./images/glass_window/ambientOcclusion.jpg",
-		opacity: "./images/glass_window/opacity.jpg",
-	});
-
-	const glass_window = useRef()
-
-	useEffect(() => {
-		textures.basecolor.repeat.x = textures.height.repeat.x = 
-		textures.ao.repeat.x = textures.roughness.repeat.x =
-		textures.metallic.repeat.x = textures.normal.repeat.x = 
-		textures.opacity.repeat.x = 4
-
-		textures.basecolor.wrapS = textures.height.wrapS = 
-		textures.ao.wrapS = textures.roughness.wrapS =
-		textures.metallic.wrapS = textures.normal.wrapS = 
-		textures.opacity.wrapS = THREE.MirroredRepeatWrapping
-		
-		textures.basecolor.needsUpdate = textures.height.needsUpdate = 
-		textures.ao.needsUpdate = textures.roughness.needsUpdate =
-		textures.metallic.needsUpdate = textures.normal.needsUpdate = 
-		textures.opacity.needsUpdate = true
-
-		glass_window.current.geometry.setAttribute("uv2", 
-			new THREE.BufferAttribute(glass_window.current.geometry.attributes.uv.array, 2)
-		)
-
-	}, [])
+function MyHemisphereLight() {
+	const { visible, color, groundColor, intensity } = useControls({
+		HemisphereLight: folder({
+			visible: false,
+			color: "#FF0000",
+			groundColor: "#0000FF",
+			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
+		})
+	})
 	return (
 		<>
-			<mesh ref={glass_window} rotation={[0,DEG2RAD * -90, 0]}>
-				<cylinderGeometry args={[2, 2, 3, 256, 256, true]} />
-				<meshStandardMaterial
-					side={THREE.DoubleSide}
+			<hemisphereLight
+				visible={visible}
+				color={color}
+				groundColor={groundColor}
+				intensity={intensity} />
+		</>
+	)
+}
 
-					map={textures.basecolor}
+function MyDirectionalLight() {
+	const { visible, color, intensity, target, p_x, p_y, p_z } = useControls({
+		DirectionalLight: folder({
+			visible: false,
+			color: "#FFFFFF",
+			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
+			target: false,
+			position: folder({
+				p_x: { value: 0, min: -10, max: 10, step: 0.001 },
+				p_y: { value: 2, min: -10, max: 10, step: 0.001 },
+				p_z: { value: 0, min: -10, max: 10, step: 0.001 },
+			}),
+		})
+	})
 
-					roughnessMap={textures.roughness}
-					roughnessMap-colorSpace={THREE.NoColorSpace}
-					metalnessMap={textures.metallic}
+	const light = useRef()
 
-					metalness={0.5}
-					metalnessMap-colorSpace={THREE.NoColorSpace}
-		
-					normalMap={textures.normal}
-					normalMap-colorSpace={THREE.NoColorSpace}
-					normalScale={5}
+	const helper = useHelper(light, THREE.DirectionalLightHelper)
 
-					displacementMap={textures.height}
-					displacementMap-colorSpace={THREE.NoColorSpace}
-					displacementScale={0.2}
-					displacementBias={-0.2}
+	useFrame((state) => {
+		const myBall = state.scene.getObjectByName("myBall")
+		if (target)
+			myBall.children[0].getWorldPosition(light.current.target.position)
+		if (helper)
+			helper.current.visible = visible ? true : false
+	}, [])
 
-					aoMap={textures.ao}
-
-					alphaMap={textures.opacity}
-					
-					transparent
-				/>
-
-			</mesh>
+	return (
+		<>
+			<directionalLight
+				visible={visible}
+				ref={light}
+				color={color}
+				intensity={intensity}
+				position={[p_x, p_y, p_z]}
+			/>
 		</>
 	)
 }
 
 
+function MyPointLight() {
+	const { visible, color, intensity, distance, target, p_x, p_y, p_z } = useControls({
+		PointLight: folder({
+			visible: false,
+			color: "#FFFFFF",
+			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
+			distance: { value: 0, min: 0, max: 50, step: 0.001 },
+			target: false,
+			position: folder({
+				p_x: { value: 0, min: -10, max: 10, step: 0.001 },
+				p_y: { value: 2, min: -10, max: 10, step: 0.001 },
+				p_z: { value: 0, min: -10, max: 10, step: 0.001 },
+			}),
+		})
+	})
+
+	const light = useRef()
+	const helper = useHelper(light, THREE.PointLightHelper, 0.5)
+
+	useFrame((state) => {
+		const myBall = state.scene.getObjectByName("myBall")
+		if (target)
+			myBall.children[0].getWorldPosition(light.current.position)
+		if (helper)
+			helper.current.visible = visible ? true : false
+	}, [])
+
+	return (
+		<>
+			<pointLight
+				visible={visible}
+				ref={light}
+				color={color}
+				intensity={intensity}
+				distance={distance}
+				position={[p_x, p_y, p_z]}
+			/>
+		</>
+	)
+}
+
+function MySpotLight() {
+	const { visible, color, intensity, distance, angle, penumbra, decay, target, p_x, p_y, p_z } = useControls({
+		SpotLight: folder({
+			visible: false,
+			color: "#FFFFFF",
+			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
+			distance: { value: 0, min: 0, max: 50, step: 0.001 },
+			angle: { value: Math.PI / 3, min: 0, max: Math.PI / 2, step: 0.001 },
+			penumbra: { value: 0, min: 0, max: 1, step: 0.001 },
+			decay: { value: 2, min: 0, max: 10, step: 0.001 },
+			target: false,
+			position: folder({
+				p_x: { value: 0, min: -10, max: 10, step: 0.001 },
+				p_y: { value: 2, min: -10, max: 10, step: 0.001 },
+				p_z: { value: 0, min: -10, max: 10, step: 0.001 },
+			}),
+		})
+	})
+
+	const light = useRef()
+	const helper = useHelper(light, THREE.SpotLightHelper)
+
+	useFrame((state) => {
+		const myBall = state.scene.getObjectByName("myBall")
+		if (target)
+			myBall.children[0].getWorldPosition(light.current.target.position)
+		if (helper)
+			helper.current.visible = visible ? true : false
+	}, [])
+
+	return (
+		<>
+			<spotLight
+				visible={visible}
+				ref={light}
+				color={color}
+				intensity={intensity}
+				distance={distance}
+				angle={angle}
+				penumbra={penumbra}
+				decay={decay}
+				position={[p_x, p_y, p_z]}
+			/>
+		</>
+	)
+}
+
+function MyRectAreaLight() {
+	const { visible, color, intensity, distance, width, height, p_x, p_y, p_z } = useControls({
+		RectAreaLight: folder({
+			visible: false,
+			color: "#FFFFFF",
+			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
+			distance: { value: 0, min: 0, max: 50, step: 0.001 },
+			width: { value: 10, min: 0, max: 50, step: 0.001 },
+			height: { value: 10, min: 0, max: 50, step: 0.001 },
+			position: folder({
+				p_x: { value: 0, min: -10, max: 10, step: 0.001 },
+				p_y: { value: 2, min: -10, max: 10, step: 0.001 },
+				p_z: { value: 0, min: -10, max: 10, step: 0.001 },
+			}),
+		})
+	})
+
+	const light = useRef()
+	return (
+		<>
+			<rectAreaLight
+				visible={visible}
+				ref={light}
+				color={color}
+				intensity={intensity}
+				distance={distance}
+				width={width}
+				height={height}
+				position={[p_x, p_y, p_z]}
+			/>
+		</>
+	)
+}
+
+
+function MyLightControls() {
+	// const { L_x, L_y, L_z, LR_x, LR_y, LR_z, LB_x, LB_y, LB_z, LG_x, LG_y, LG_z } = useControls({
+	// 	lightCntr: folder({
+	// 		lightTotal: folder({
+	// 			L_x: { value: 0, min: -10, max: 10, step: 0.001 },
+	// 			L_y: { value: 0, min: -10, max: 10, step: 0.001 },
+	// 			L_z: { value: 0, min: -10, max: 10, step: 0.001 },
+	// 		}),
+	// 		lightRed: folder({
+	// 			LR_x: { value: 1, min: -10, max: 10, step: 0.001 },
+	// 			LR_y: { value: 0, min: -10, max: 10, step: 0.001 },
+	// 			LR_z: { value: 0, min: -10, max: 10, step: 0.001 },
+	// 		}),
+	// 		lightGreen: folder({
+	// 			LG_x: { value: 0, min: -10, max: 10, step: 0.001 },
+	// 			LG_y: { value: 1, min: -10, max: 10, step: 0.001 },
+	// 			LG_z: { value: 0, min: -10, max: 10, step: 0.001 }
+	// 		}),
+	// 		lightBlue: folder({
+	// 			LB_x: { value: -1, min: -10, max: 10, step: 0.001 },
+	// 			LB_y: { value: 0, min: -10, max: 10, step: 0.001 },
+	// 			LB_z: { value: 0, min: -10, max: 10, step: 0.001 },
+	// 		})
+	// 	})
+	// })
+
+	return (
+		<>
+			<MyAmbientLight />
+			<MyHemisphereLight />
+			<MyDirectionalLight />
+			<MyPointLight />
+			<MySpotLight />
+			<MyRectAreaLight />
+			{/* 
+			<directionalLight color="red" position={[L_x + LR_x, L_y + LR_y, L_z + LR_z]} intensity={1.0} />
+			<directionalLight color="green" position={[L_x + LG_x, L_y + LG_y, L_z + LG_z]} intensity={1.0} />
+			<directionalLight color="blue" position={[L_x + LB_x, L_y + LB_y, L_z + LB_z]} intensity={1.0} /> 
+			*/}
+		</>
+	)
+}
+
+
+function MyEgg() {
+	return (
+		<mesh>
+			<sphereGeometry />
+
+			<meshStandardMaterial
+				roughness={0.2}
+				metalness={0.5}
+			/>
+		</mesh>
+	)
+}
+
+function MyRing() {
+	const torusGeometry = new THREE.TorusGeometry(0.4, 0.1, 32, 32)
+
+	const torusMaterial = new THREE.MeshStandardMaterial({
+		color: 0x9b59b6,
+		roughness: 0.5,
+		metalness: 0.9
+	})
+
+	return (
+		<>
+			{
+				new Array(8).fill().map((item, index) => {
+					return (
+						<group key={index} rotation-y={THREE.MathUtils.degToRad(45 * index)}>
+							<mesh
+								geometry={torusGeometry}
+								material={torusMaterial}
+								position={[3, 0.5, 0]}
+							/>
+
+						</group>
+					)
+				})}
+		</>
+	)
+}
+
+function MyBall() {
+
+	useFrame((state) => {
+		const time = state.clock.elapsedTime
+		const myBall = state.scene.getObjectByName("myBall")
+		myBall.rotation.y = THREE.MathUtils.degToRad(time * 50)
+	}, [])
+
+	return (
+		<>
+			<group name='myBall'>
+				<mesh position={[3, 0.5, 0]}>
+					<sphereGeometry args={[0.3, 32, 32]} />
+					<meshStandardMaterial
+						color={0xe74c3c}
+						roughness={0.2}
+						metalness={0.5}
+					/>
+				</mesh>
+			</group>
+		</>
+	)
+}
+function MyObject({ ...props }) {
+
+	return (
+		<>
+			<MyEgg />
+			<MyRing />
+			<MyBall />
+		</>
+	)
+}
 
 function MyElement3D() {
-	useEffect(() => {
-
-	}, [])
 
 	return (
 		<>
 			<OrbitControls />
-
-			<ambientLight intensity={0.2} />
 			<MyLightControls />
 			<MyRoom>
 				<MyObject />
