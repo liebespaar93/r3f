@@ -1,9 +1,9 @@
 import * as THREE from 'three'
-import { MeshReflectorMaterial, OrbitControls, useHelper } from '@react-three/drei'
-import { useFrame } from "@react-three/fiber"
+import { MeshReflectorMaterial, OrbitControls, OrthographicCamera, PerspectiveCamera, useHelper } from '@react-three/drei'
+import { useFrame, useThree } from "@react-three/fiber"
 import { } from "@react-three/drei"
 import { folder, useControls } from 'leva'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 function MyRoom({ children }) {
 	return (
@@ -50,247 +50,39 @@ function MyRoom({ children }) {
 	)
 }
 
-function MyAmbientLight() {
-	const { visible, color, intensity } = useControls({
-		AmbientLight: folder({
-			visible: false,
-			color: "#FFFFFF",
-			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
-		})
-	})
-	return (
-		<>
-			<ambientLight
-				visible={visible}
-				color={color}
-				intensity={intensity} />
-		</>
-	)
-}
-
-function MyHemisphereLight() {
-	const { visible, color, groundColor, intensity } = useControls({
-		HemisphereLight: folder({
-			visible: false,
-			color: "#FF0000",
-			groundColor: "#0000FF",
-			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
-		})
-	})
-	return (
-		<>
-			<hemisphereLight
-				visible={visible}
-				color={color}
-				groundColor={groundColor}
-				intensity={intensity} />
-		</>
-	)
-}
-
-function MyDirectionalLight() {
-	const { visible, color, intensity, target, p_x, p_y, p_z } = useControls({
-		DirectionalLight: folder({
-			visible: false,
-			color: "#FFFFFF",
-			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
-			target: false,
-			position: folder({
-				p_x: { value: 0, min: -10, max: 10, step: 0.001 },
-				p_y: { value: 2, min: -10, max: 10, step: 0.001 },
-				p_z: { value: 0, min: -10, max: 10, step: 0.001 },
-			}),
-		})
-	})
-
-	const light = useRef()
-
-	const helper = useHelper(light, THREE.DirectionalLightHelper)
-
-	useFrame((state) => {
-		const myBall = state.scene.getObjectByName("myBall")
-		if (target)
-			myBall.children[0].getWorldPosition(light.current.target.position)
-		if (helper)
-			helper.current.visible = visible ? true : false
-	}, [])
-
-	return (
-		<>
-			<directionalLight
-				visible={visible}
-				ref={light}
-				color={color}
-				intensity={intensity}
-				position={[p_x, p_y, p_z]}
-			/>
-		</>
-	)
-}
-
-
-function MyPointLight() {
-	const { visible, color, intensity, distance, target, p_x, p_y, p_z } = useControls({
-		PointLight: folder({
-			visible: false,
-			color: "#FFFFFF",
-			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
-			distance: { value: 0, min: 0, max: 50, step: 0.001 },
-			target: false,
-			position: folder({
-				p_x: { value: 0, min: -10, max: 10, step: 0.001 },
-				p_y: { value: 2, min: -10, max: 10, step: 0.001 },
-				p_z: { value: 0, min: -10, max: 10, step: 0.001 },
-			}),
-		})
-	})
-
-	const light = useRef()
-	const helper = useHelper(light, THREE.PointLightHelper, 0.5)
-
-	useFrame((state) => {
-		const myBall = state.scene.getObjectByName("myBall")
-		if (target)
-			myBall.children[0].getWorldPosition(light.current.position)
-		if (helper)
-			helper.current.visible = visible ? true : false
-	}, [])
-
-	return (
-		<>
-			<pointLight
-				visible={visible}
-				ref={light}
-				color={color}
-				intensity={intensity}
-				distance={distance}
-				position={[p_x, p_y, p_z]}
-			/>
-		</>
-	)
-}
-
-function MySpotLight() {
-	const { visible, color, intensity, distance, angle, penumbra, decay, target, p_x, p_y, p_z } = useControls({
-		SpotLight: folder({
-			visible: false,
-			color: "#FFFFFF",
-			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
-			distance: { value: 0, min: 0, max: 50, step: 0.001 },
-			angle: { value: Math.PI / 3, min: 0, max: Math.PI / 2, step: 0.001 },
-			penumbra: { value: 0, min: 0, max: 1, step: 0.001 },
-			decay: { value: 2, min: 0, max: 10, step: 0.001 },
-			target: false,
-			position: folder({
-				p_x: { value: 0, min: -10, max: 10, step: 0.001 },
-				p_y: { value: 2, min: -10, max: 10, step: 0.001 },
-				p_z: { value: 0, min: -10, max: 10, step: 0.001 },
-			}),
-		})
-	})
-
-	const light = useRef()
-	const helper = useHelper(light, THREE.SpotLightHelper)
-
-	useFrame((state) => {
-		const myBall = state.scene.getObjectByName("myBall")
-		if (target)
-			myBall.children[0].getWorldPosition(light.current.target.position)
-		if (helper)
-			helper.current.visible = visible ? true : false
-	}, [])
-
-	return (
-		<>
-			<spotLight
-				visible={visible}
-				ref={light}
-				color={color}
-				intensity={intensity}
-				distance={distance}
-				angle={angle}
-				penumbra={penumbra}
-				decay={decay}
-				position={[p_x, p_y, p_z]}
-			/>
-		</>
-	)
-}
-
-function MyRectAreaLight() {
-	const { visible, color, intensity, distance, width, height, p_x, p_y, p_z } = useControls({
-		RectAreaLight: folder({
-			visible: false,
-			color: "#FFFFFF",
-			intensity: { value: 1, min: 0, max: 1, step: 0.001 },
-			distance: { value: 0, min: 0, max: 50, step: 0.001 },
-			width: { value: 10, min: 0, max: 50, step: 0.001 },
-			height: { value: 10, min: 0, max: 50, step: 0.001 },
-			position: folder({
-				p_x: { value: 0, min: -10, max: 10, step: 0.001 },
-				p_y: { value: 2, min: -10, max: 10, step: 0.001 },
-				p_z: { value: 0, min: -10, max: 10, step: 0.001 },
-			}),
-		})
-	})
-
-	const light = useRef()
-	return (
-		<>
-			<rectAreaLight
-				visible={visible}
-				ref={light}
-				color={color}
-				intensity={intensity}
-				distance={distance}
-				width={width}
-				height={height}
-				position={[p_x, p_y, p_z]}
-			/>
-		</>
-	)
-}
-
 
 function MyLightControls() {
-	// const { L_x, L_y, L_z, LR_x, LR_y, LR_z, LB_x, LB_y, LB_z, LG_x, LG_y, LG_z } = useControls({
-	// 	lightCntr: folder({
-	// 		lightTotal: folder({
-	// 			L_x: { value: 0, min: -10, max: 10, step: 0.001 },
-	// 			L_y: { value: 0, min: -10, max: 10, step: 0.001 },
-	// 			L_z: { value: 0, min: -10, max: 10, step: 0.001 },
-	// 		}),
-	// 		lightRed: folder({
-	// 			LR_x: { value: 1, min: -10, max: 10, step: 0.001 },
-	// 			LR_y: { value: 0, min: -10, max: 10, step: 0.001 },
-	// 			LR_z: { value: 0, min: -10, max: 10, step: 0.001 },
-	// 		}),
-	// 		lightGreen: folder({
-	// 			LG_x: { value: 0, min: -10, max: 10, step: 0.001 },
-	// 			LG_y: { value: 1, min: -10, max: 10, step: 0.001 },
-	// 			LG_z: { value: 0, min: -10, max: 10, step: 0.001 }
-	// 		}),
-	// 		lightBlue: folder({
-	// 			LB_x: { value: -1, min: -10, max: 10, step: 0.001 },
-	// 			LB_y: { value: 0, min: -10, max: 10, step: 0.001 },
-	// 			LB_z: { value: 0, min: -10, max: 10, step: 0.001 },
-	// 		})
-	// 	})
-	// })
+	const { L_x, L_y, L_z, LR_x, LR_y, LR_z, LB_x, LB_y, LB_z, LG_x, LG_y, LG_z } = useControls({
+		lightCntr: folder({
+			lightTotal: folder({
+				L_x: { value: 0, min: -10, max: 10, step: 0.001 },
+				L_y: { value: 0, min: -10, max: 10, step: 0.001 },
+				L_z: { value: 0, min: -10, max: 10, step: 0.001 },
+			}),
+			lightRed: folder({
+				LR_x: { value: 1, min: -10, max: 10, step: 0.001 },
+				LR_y: { value: 0, min: -10, max: 10, step: 0.001 },
+				LR_z: { value: 0, min: -10, max: 10, step: 0.001 },
+			}),
+			lightGreen: folder({
+				LG_x: { value: 0, min: -10, max: 10, step: 0.001 },
+				LG_y: { value: 1, min: -10, max: 10, step: 0.001 },
+				LG_z: { value: 0, min: -10, max: 10, step: 0.001 }
+			}),
+			lightBlue: folder({
+				LB_x: { value: -1, min: -10, max: 10, step: 0.001 },
+				LB_y: { value: 0, min: -10, max: 10, step: 0.001 },
+				LB_z: { value: 0, min: -10, max: 10, step: 0.001 },
+			})
+		})
+	})
 
 	return (
 		<>
-			<MyAmbientLight />
-			<MyHemisphereLight />
-			<MyDirectionalLight />
-			<MyPointLight />
-			<MySpotLight />
-			<MyRectAreaLight />
-			{/* 
 			<directionalLight color="red" position={[L_x + LR_x, L_y + LR_y, L_z + LR_z]} intensity={1.0} />
 			<directionalLight color="green" position={[L_x + LG_x, L_y + LG_y, L_z + LG_z]} intensity={1.0} />
-			<directionalLight color="blue" position={[L_x + LB_x, L_y + LB_y, L_z + LB_z]} intensity={1.0} /> 
-			*/}
+			<directionalLight color="blue" position={[L_x + LB_x, L_y + LB_y, L_z + LB_z]} intensity={1.0} />
+
 		</>
 	)
 }
@@ -371,11 +163,144 @@ function MyObject({ ...props }) {
 	)
 }
 
-function MyElement3D() {
+function MyPerspectiveCamera() {
+	const helper = useRef()
+	useHelper(helper, THREE.CameraHelper)
+
+	const { aspect, far, filmGauge, filmOffset, focus, fov, near, zoom, target, p_x, p_y, p_z, r_x, r_y, r_z } = useControls({
+		PerspectiveCamera: folder({
+			aspect: { value: 0, min: 0, max: 1, step: 0.001 },
+			far: { value: 10, min: 0.001, max: 100, step: 0.001 },
+			filmGauge: { value: 35, min: 0, max: 50, step: 0.001 },
+			filmOffset: { value: 0, min: 0, max: 1, step: 0.001 },
+			focus: { value: 10, min: 0, max: 10, step: 0.001 },
+			fov: { value: 50, min: 0, max: 179, step: 0.001 },
+			near: { value: 0.1, min: 0.001, max: 20, step: 0.001 },
+			zoom: { value: 0, min: -10, max: 10, step: 0.001 },
+			target: { options: { camera: 0, helper: 1, ball: 2 } },
+			position: folder({
+				p_x: { value: 0, min: -10, max: 10, step: 0.001 },
+				p_y: { value: 4, min: -10, max: 10, step: 0.001 },
+				p_z: { value: 6, min: -10, max: 10, step: 0.001 },
+			}),
+			rotation: folder({
+				r_x: { value: 0, min: - Math.PI, max: Math.PI, step: 0.001 },
+				r_y: { value: 0, min: - Math.PI, max: Math.PI, step: 0.001 },
+				r_z: { value: 0, min: - Math.PI, max: Math.PI, step: 0.001 },
+			})
+		})
+	})
+
+	useFrame((state) => {
+		const myBall = state.scene.getObjectByName("myBall")
+
+		if (target == 1) {
+			state.camera.position.copy(helper.current.position)
+			state.camera.setRotationFromEuler(helper.current.rotation)
+		}
+		else if (target == 2) {
+			const position = new THREE.Vector3()
+			state.camera.position.copy(myBall.children[0].getWorldPosition(position))
+			state.camera.rotateY(THREE.MathUtils.degToRad(-50))
+		}
+	}, [])
+
+
+	if (helper.current) {
+		helper.current.aspect = aspect
+		helper.current.far = far
+		helper.current.filmGauge = filmGauge
+		helper.current.filmOffset = filmOffset
+		helper.current.focus = focus
+		helper.current.fov = fov
+		helper.current.near = near
+		// helper.current.zoom = zoom
+	}
+	return (
+		<>
+			<PerspectiveCamera
+				ref={helper}
+				position={[p_x, p_y, p_z]}
+				rotation={[r_x, r_y, r_z]} />
+		</>
+	)
+}
+
+function MyOrthographicCamera() {
+	const helper = useRef()
+	const aa = useHelper(helper, THREE.CameraHelper)
+
+	console.log(helper)
+	const { left, right, top, bottom, far, near, zoom, target, p_x, p_y, p_z, r_x, r_y, r_z } = useControls({
+		OrthographicCamera: folder({
+			left: { value: 10, min: -20, max: 20, step: 0.001 },
+			right: { value: -10, min: -20, max: 20, step: 0.001 },
+			top: { value: 10, min: -20, max: 20, step: 0.001 },
+			bottom: { value: -10, min: -20, max: 20, step: 0.001 },
+			far: { value: 50, min: 0.001, max: 100, step: 0.001 },
+			near: { value: 1, min: 0.001, max: 20, step: 0.001 },
+			zoom: { value: 0, min: -10, max: 10, step: 0.001 },
+			target: { options: { camera: 0, helper: 1 } },
+			position: folder({
+				p_x: { value: 0, min: -10, max: 10, step: 0.001 },
+				p_y: { value: 4, min: -10, max: 10, step: 0.001 },
+				p_z: { value: 6, min: -10, max: 10, step: 0.001 },
+			}),
+			rotation: folder({
+				r_x: { value: 0, min: - Math.PI, max: Math.PI, step: 0.001 },
+				r_y: { value: 0, min: - Math.PI, max: Math.PI, step: 0.001 },
+				r_z: { value: 0, min: - Math.PI, max: Math.PI, step: 0.001 },
+			})
+		})
+	})
 
 	return (
 		<>
+
+			{target == 0 &&
+				<OrthographicCamera
+					makeDefault={true}
+					ref={helper}
+					zoom={1}
+					top={top}
+					bottom={bottom}
+					left={left}
+					right={right}
+					near={1}
+					far={far}
+					position={[p_x, p_y, p_z]}
+					rotation={[r_x, r_y, r_z]}
+				/>
+			}
+			{target == 1 &&
+				<OrthographicCamera
+					ref={helper}
+					makeDefault={false}
+					zoom={1}
+					top={top}
+					bottom={bottom}
+					left={left}
+					right={right}
+					near={1}
+					far={far}
+					position={[p_x, p_y, p_z]}
+					rotation={[r_x, r_y, r_z]}
+				/>
+			}
+		</>
+	)
+}
+
+
+function MyElement3D() {
+	const { cam } = useControls({
+		cam: { options: { MyPerspectiveCamera: 0, MyOrthographicCamera: 1 } },
+	})
+	return (
+		<>
 			<OrbitControls />
+			{cam == 0 && <MyPerspectiveCamera />}
+			{cam == 1 && <MyOrthographicCamera />}
 			<MyLightControls />
 			<MyRoom>
 				<MyObject />

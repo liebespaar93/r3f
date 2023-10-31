@@ -36,6 +36,10 @@ def main():
             data_all = "\n"
         else :
             data_all += data.replace('\n', ' ')
+    
+    if (data_all != "\n"):
+        data_all += " |"
+        fw.write(data_all)
 
     fw.close()
     fr.close()

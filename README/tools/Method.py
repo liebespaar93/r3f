@@ -38,6 +38,10 @@ def main():
         else :
             data_all += data.replace('\n', ' ')
 
+    if (data_all != "\n"):
+        data_all += " |"
+        fw.write(data_all)
+    
     fw.close()
     fr.close()
     print("생성완료 : ", file_out + "_M.md")
