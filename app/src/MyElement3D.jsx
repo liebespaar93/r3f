@@ -1,9 +1,9 @@
 import * as THREE from 'three'
-import { MeshReflectorMaterial, OrbitControls, OrthographicCamera, PerspectiveCamera, useHelper } from '@react-three/drei'
-import { useFrame, useThree } from "@react-three/fiber"
+import { Environment, MeshReflectorMaterial, OrbitControls, useAnimations, useGLTF } from '@react-three/drei'
+
 import { } from "@react-three/drei"
 import { folder, useControls } from 'leva'
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 
 function MyRoom({ children }) {
 	return (
@@ -91,84 +91,62 @@ function MyLightControls() {
 	)
 }
 
+function MyModel() {
+	const model = useGLTF("./models/model.glb")
+	const [height, setHeight] = useState(0);
 
-function MyEgg() {
-	return (
-		<mesh
-			receiveShadow 
-			>
-			<sphereGeometry />
+	const animation = useAnimations(model.animations, model.scene)
 
-			<meshStandardMaterial
-				roughness={0.2}
-				metalness={0.5}
-			/>
-		</mesh>
-	)
-}
-
-function MyRing() {
-	const torusGeometry = new THREE.TorusGeometry(0.4, 0.1, 32, 32)
-
-	const torusMaterial = new THREE.MeshStandardMaterial({
-		color: 0x9b59b6,
-		roughness: 0.5,
-		metalness: 0.9
+	const { actionName } = useControls({
+		actionName: {
+			value: animation.names[0],
+			options: animation.names
+		}
 	})
 
+	useEffect(() => {
+		const action = animation.actions[actionName]
+		action.reset().fadeIn(0.5).play()
+
+		return (() => {
+			action.fadeOut(0.5)
+		})
+	}, [actionName])
+
+	useEffect(() => {
+		let minY = Infinity
+		let maxY = -Infinity
+
+		model.scene.traverse((item) => {
+			if (item.isMesh) {
+				const geomBbox = item.geometry.boundingBox
+				console.log(geomBbox.min.y, minY)
+				if (minY > geomBbox.min.y) minY = geomBbox.min.y
+				if (maxY < geomBbox.max.y) maxY = geomBbox.max.y
+			}
+		})
+		setHeight(maxY - minY)
+	}, [model.scene])
+
+	// const h = maxY - minY
+
 	return (
 		<>
-			{
-				new Array(8).fill().map((item, index) => {
-					return (
-						<group key={index} rotation-y={THREE.MathUtils.degToRad(45 * index)}>
-							<mesh
-								geometry={torusGeometry}
-								material={torusMaterial}
-								position={[3, 0.5, 0]}
-								castShadow
-							/>
-
-						</group>
-					)
-				})}
+			<primitive
+				scale={3}
+				object={model.scene}
+				position-y={-(height / 2) * 3}
+			/>
 		</>
 	)
 }
 
-function MyBall() {
-
-	useFrame((state) => {
-		const time = state.clock.elapsedTime
-		const myBall = state.scene.getObjectByName("myBall")
-		myBall.rotation.y = THREE.MathUtils.degToRad(time * 50)
-	}, [])
-
-	return (
-		<>
-			<group name='myBall'>
-				<mesh position={[3, 0.5, 0]}
-					castShadow
-				>
-					<sphereGeometry args={[0.3, 32, 32]} />
-					<meshStandardMaterial
-						color={0xe74c3c}
-						roughness={0.2}
-						metalness={0.5}
-					/>
-				</mesh>
-			</group>
-		</>
-	)
-}
 function MyObject({ ...props }) {
 
 	return (
 		<>
-			<MyshadowBox />
-			<MyEgg />
-			<MyRing />
-			<MyBall />
+			<Environment preset='sunset' />
+			<MyModel />
 		</>
 	)
 }
