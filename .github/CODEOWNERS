@@ -1,0 +1,31 @@
+# CODEOWNERS
+
+## 하위에 코드를 작성하세요
+
+* @liebespaar93
+
+## CODEOWNERS 사용 설명입니다
+
+## 지원하는 담당자 적용 방식입니다
+
+### @<깃아이디> : @kyoulee
+#### <메일>@<메일주소> : kyoulee@github.com
+#### @<repo>/<team> : @repositories/kyoulee_team
+
+## 지원하는 형식 지정입니다
+
+### 루트폴더 경로 참조
+#### /<폴더 or 파일명>
+#### /docs <담당자> <담당자2> ...
+
+### 특정 파일 확장저
+#### *.<파일확장자> <담당자> 
+#### *.md kyoulee@github.com ...
+
+### 특정 경로
+#### <폴더명>/* <담당자>
+#### docs/* @kyoulee ...
+
+### 특정 권한 취소 
+#### <형식>
+#### /docs/.github
