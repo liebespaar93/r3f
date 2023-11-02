@@ -9,7 +9,7 @@ function App() {
   const bgColor = new Color(0x222222);
   return (
     <>
-      <Canvas>
+      <Canvas shadows="variance">
         <color
           attach="background"
           args={[bgColor.r, bgColor.g, bgColor.b]}
