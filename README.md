@@ -122,3 +122,7 @@ categories:
 | Note | > [!IMPORTANT] | 인용을 이용한 중요 표시 |
 | Note | > [!TIP] | 인용을 이용한 팁 표시 |
 | Note | > [!CHECK] | 인용을 이용한 체크 표시 |
+
+## 🎨 Markdown Style
+github의 GitHub Flavored Markdown(GFM)을 다른다
+🔗 링크 <https://github.github.com/gfm/>
