@@ -89,6 +89,15 @@ categories:
 
 [![image](https://cdn.polyhaven.com/site_images/home/window_rend.jpg?width=630)](https://polyhaven.com)
 
+## 🚀 solarsystemscope
+
+> 우주 texture 제공 해준다
+
+### 🔗 링크 <https://www.solarsystemscope.com/>
+
+[![image](https://www.solarsystemscope.com/images/sss_og.jpg)](https://www.solarsystemscope.com)
+
+
 ## 🏛️ 규칙
 
 | 아이콘 |  형식 | 설명 |
