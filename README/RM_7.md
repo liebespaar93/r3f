@@ -253,12 +253,12 @@ export { Material };
 | [MeshBasicMaterial](#📝-meshbasicmaterial) | 기본 물체(제질) | ![image](./assets/MeshBasicMaterial.gif) |
 | [MeshDepthMaterial](#📝-meshdepthmaterial) | 깊이에 따른 물체(제질) | ![image](./assets/MeshDepthMaterial.gif) |
 | [MeshDistanceMaterial](#📝-meshdistancematerial) | 투영 물체(제질) | ![image](./assets/MeshDistanceMaterial.gif) |
-| [MeshLambertMaterial](#📝-meshlambertmaterial) | 빛에 상호작용하는 물체(제질) | ![image](./assets/MeshLambertMaterial.gif) |
-| [MeshMatcapMaterial](#📝-meshmatcapmaterial) | Matcap 제질을 가져와 쓰는 물체(제질) | ![image](./assets/MeshMatcapMaterial.gif) |
-| [MeshNormalMaterial](#📝-meshnormalmaterial) | 평범한 물체(제질) | ![image](./assets/MeshNormalMaterial.gif) |
-| [MeshPhongMaterial](#📝-meshphongmaterial) | 특정 빛 반사에 대한 물체(제질) | ![image](./assets/MeshPhongMaterial.gif) |
-| [MeshPhysicalMaterial](#📝-meshphysicalmaterial) | 코팅과 빛 반사에대 한 제질 물체(제질) | ![image](./assets/MeshPhysicalMaterial.gif) |
-| [MeshStandardMaterial](#📝-meshstandardmaterial) | 기본적인 물체(제질) | ![image](./assets/MeshStandardMaterial.gif) |
+| [MeshLambertMaterial](#📝-meshlambertmaterial) | 각도에 따른 빛 난반사 표현 물체(제질) | ![image](./assets/MeshLambertMaterial.gif) |
+| [MeshMatcapMaterial](#📝-meshmatcapmaterial) | Material Capture 물체(제질) | ![image](./assets/MeshMatcapMaterial.gif) |
+| [MeshNormalMaterial](#📝-meshnormalmaterial) | 기본 특징 물체(제질) | ![image](./assets/MeshNormalMaterial.gif) |
+| [MeshPhongMaterial](#📝-meshphongmaterial) | 빛 반사 표현의 물체(제질) | ![image](./assets/MeshPhongMaterial.gif) |
+| [MeshPhysicalMaterial](#📝-meshphysicalmaterial) | 전문가용 제질 물체(제질) | ![image](./assets/MeshPhysicalMaterial.gif) |
+| [MeshStandardMaterial](#📝-meshstandardmaterial) | 기본적 기능의 물체(제질) | ![image](./assets/MeshStandardMaterial.gif) |
 | [MeshToonMaterial](#📝-meshtoonmaterial) | 툰 느낌 물체(제질) | ![image](./assets/MeshToonMaterial.gif) |
 | [PointsMaterial](#📝-pointsmaterial) | 꼭지점 물체(제질) | ![image](./assets/PointsMaterial.gif) |
 | [RawShaderMaterial](#📝-rawshadermaterial) | 아직 밝혀지지 않음 물체(제질) | ![image](./assets/RawShaderMaterial.gif) |
@@ -378,7 +378,7 @@ export { Material };
 
 ### 📝 MeshLambertMaterial
 >
-> 빛에 상호작용하는 물체(제질)
+> 각도에 따른 빛 표현 물체(제질)
 
 ### 👀 Preview(MeshLambertMaterial)
 
@@ -420,7 +420,7 @@ export { Material };
 
 ### 📝 MeshMatcapMaterial
 >
-> Matcap 제질을 가져와 쓰는 물체(제질)
+> Material Capture 물체(제질)
 
 ### 🚀 유용한 링크
 
@@ -453,7 +453,7 @@ export { Material };
 
 ### 📝 MeshNormalMaterial
 >
-> 평범한 물체(제질)
+> 기본 특징 물체(제질)
 
 ### 👀 Preview(MeshNormalMaterial)
 
@@ -478,7 +478,8 @@ export { Material };
 
 ### 📝 MeshPhongMaterial
 >
-> 특정 빛 반사에 대한 물체(제질)
+> 빛 반사 표현의 물체(제질)
+> 반사 방법은 Global Illumination 방식을 사용한다
 
 ### 👀 Preview(MeshPhongMaterial)
 
@@ -522,7 +523,8 @@ export { Material };
 
 ### 📝 MeshPhysicalMaterial
 >
-> 코팅과 빛 반사에대 한 제질 물체(제질)
+> 전문가용 제질 물체(제질)
+> 다향한 표현을 할 수 있다
 
 ### 👀 Preview(MeshPhysicalMaterial)
 
@@ -564,7 +566,7 @@ export { Material };
 
 ### 📝 MeshStandardMaterial
 >
-> 기본적인 물체(제질)
+> 기본적 기능의 물체(제질)
 
 ### 👀 Preview(MeshStandardMaterial)
 
