@@ -185,3 +185,8 @@ function MyDistort() {
     )
 }
 ```
+
+◀️ 이전 글 : [🎓 강의 리뷰 Material three](./RM_7.md)
+---
+▶️ 다음 글 : [🎓 강의 리뷰 Material textermap](./RM_9.md)
+---
